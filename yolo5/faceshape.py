@@ -26,7 +26,7 @@ def faceshape_best(User_img):
   source = User_img  # file/dir/URL/glob/screen/0(webcam)
   data= 'coco128.yaml'  # dataset.yaml path
   imgsz=(640, 640) # inference size (height, width)
-  conf_thres=0.25  # confidence threshold
+  conf_thres=0.1  # confidence threshold
   iou_thres=0.45  # NMS IOU threshold
   max_det=1000  # maximum detections per image
   device=''  # cuda device, i.e. 0 or 0,1,2,3 or cpu
@@ -98,6 +98,7 @@ def faceshape_best(User_img):
           # visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
           pred = model(im, augment=augment, visualize=visualize)
 
+
       # NMS
       with dt[2]:
           pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
@@ -126,11 +127,25 @@ def faceshape_best(User_img):
               det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
               # Print results
+              # max_c = 0
+              # max_conf_class = 0
+              # for c_list in det[:, 4:5].unique():
+              #
+              #     if max_c < c_list[0]:
+              #         max_c = c_list[0]
+              #         max_conf_class = c_list[1]
+              max_conf = 0
+              max_class = 0
+              for conf_number, c in zip(det[:,4], det[:, 5].unique()):
+                  if max_conf < conf_number:
+                      n = (det[:, 5] == c).sum()  # detections per class
+                      s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
-              for c in det[:, 5].unique():
-                  n = (det[:, 5] == c).sum()  # detections per class
-                  s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-                  result.append(names[int(c)])
+                      max_class = c
+                      max_conf = conf_number
+
+              result.append(names[int(max_class)])
+
 
               # Write results
               # for *xyxy, conf, cls in reversed(det):

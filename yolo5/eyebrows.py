@@ -20,7 +20,7 @@ def eyebrows_best(User_img, result):
   source = User_img  # file/dir/URL/glob/screen/0(webcam)
   data= 'coco128.yaml'  # dataset.yaml path
   imgsz=(640, 640) # inference size (height, width)
-  conf_thres=0.25  # confidence threshold
+  conf_thres=0.1  # confidence threshold
   iou_thres=0.45  # NMS IOU threshold
   max_det=1000  # maximum detections per image
   device=''  # cuda device, i.e. 0 or 0,1,2,3 or cpu
@@ -95,8 +95,15 @@ def eyebrows_best(User_img, result):
 
               # Print results
 
-              for c in det[:, 5].unique():
-                  n = (det[:, 5] == c).sum()  # detections per class
-                  s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-                  result.append(names[int(c)])
+              max_conf = 0
+              max_class = 0
+              for conf_number, c in zip(det[:, 4], det[:, 5].unique()):
+                  if max_conf < conf_number:
+                      n = (det[:, 5] == c).sum()  # detections per class
+                      s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+
+                      max_class = c
+                      max_conf = conf_number
+
+              result.append(names[int(max_class)])
   return result

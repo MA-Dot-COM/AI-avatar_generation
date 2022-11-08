@@ -1,6 +1,6 @@
-from eyes import eyes_best
-from eyebrows import eyebrows_best
-from faceshape import faceshape_best
+from yolo5.eyes import eyes_best
+from yolo5.eyebrows import eyebrows_best
+from yolo5.faceshape import faceshape_best
 import urllib.request
 import time
 from PIL import Image
