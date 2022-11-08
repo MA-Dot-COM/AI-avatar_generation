@@ -20,7 +20,7 @@ def read_root():
 def test_model(item: Item):
     url = item.url
     img_path = img_download(url)
-    return User_Avatar(img_path,classification_model)
+    return User_Avatar(img_path)
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
