@@ -105,5 +105,5 @@ def eyebrows_best(User_img, result):
                       max_class = c
                       max_conf = conf_number
 
-              result.append(names[int(max_class)])
+              result.append(int(max_class))
   return result
